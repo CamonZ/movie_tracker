@@ -10,10 +10,13 @@ gem 'puma'
 gem 'active_model_serializers'
 
 # Use Redis adapter to run Action Cable in production
-# gem 'redis', '~> 3.0'
+gem 'redis', '~> 3.0'
+gem 'resque'
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
+gem 'omdbapi'
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 # gem 'rack-cors'
@@ -21,9 +24,7 @@ gem 'active_model_serializers'
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
-  gem 'rspec-rails', '3.5.0.beta1'
   gem 'factory_girl_rails'
-  gem 'shoulda-matchers'
   gem 'pry-rails'
   gem 'pry-nav'
   gem 'pry-stack_explorer'
@@ -31,6 +32,11 @@ end
 
 group :test do
   gem 'json-schema'
+  gem 'resque_spec'
+  gem 'shoulda-matchers'
+  gem 'rspec-rails', '3.5.0.beta1'
+  gem 'webmock'
+  gem 'vcr'
 end
 
 group :development do

@@ -9,14 +9,9 @@ class Api::V1::MoviesController < ::ApplicationController
     render json: movie
   end
 
-  def create
-    movie = Movie.create(movie_attributes)
-
-    if movie.persisted?
-      render json: movie, status: :created
-    else
-      render json: { errors: movie.errors }, status: :bad_request
-    end
+  def import
+    Movie.import(import_attributes)
+    head :accepted
   end
 
   def update
@@ -29,10 +24,14 @@ class Api::V1::MoviesController < ::ApplicationController
 
   def destroy
     Movie.delete(params[:id])
-    render nothing: true, status: :accepted
+    head :accepted
   end
 
   private
+
+  def import_attributes
+    params.require(:movie).require(:imdb_id)
+  end
 
   def movie_attributes
     params.require(:movie).permit(:title, :imdb_id)

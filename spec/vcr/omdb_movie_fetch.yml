@@ -1,0 +1,63 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://omdbapi.com/?i=tt0468569
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 06 Apr 2016 19:36:47 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Set-Cookie:
+      - __cfduid=dfe3ea73e53fc8d688f1bd5b1ab400a2f1459971407; expires=Thu, 06-Apr-17
+        19:36:47 GMT; path=/; domain=.omdbapi.com; HttpOnly
+      Cache-Control:
+      - public, max-age=3600
+      Expires:
+      - Wed, 06 Apr 2016 20:37:16 GMT
+      Last-Modified:
+      - Wed, 06 Apr 2016 19:37:16 GMT
+      Vary:
+      - "*"
+      X-Aspnet-Version:
+      - 4.0.30319
+      X-Powered-By:
+      - ASP.NET
+      Access-Control-Allow-Origin:
+      - "*"
+      Server:
+      - cloudflare-nginx
+      Cf-Ray:
+      - 28f7b0cfb7a8102b-CDG
+    body:
+      encoding: ASCII-8BIT
+      string: '{"Title":"The Dark Knight","Year":"2008","Rated":"PG-13","Released":"18
+        Jul 2008","Runtime":"152 min","Genre":"Action, Crime, Drama","Director":"Christopher
+        Nolan","Writer":"Jonathan Nolan (screenplay), Christopher Nolan (screenplay),
+        Christopher Nolan (story), David S. Goyer (story), Bob Kane (characters)","Actors":"Christian
+        Bale, Heath Ledger, Aaron Eckhart, Michael Caine","Plot":"When the menace
+        known as the Joker wreaks havoc and chaos on the people of Gotham, the caped
+        crusader must come to terms with one of the greatest psychological tests of
+        his ability to fight injustice.","Language":"English, Mandarin","Country":"USA,
+        UK","Awards":"Won 2 Oscars. Another 142 wins & 126 nominations.","Poster":"http://ia.media-imdb.com/images/M/MV5BMTMxNTMwODM0NF5BMl5BanBnXkFtZTcwODAyMTk2Mw@@._V1_SX300.jpg","Metascore":"82","imdbRating":"9.0","imdbVotes":"1,601,928","imdbID":"tt0468569","Type":"movie","Response":"True"}'
+    http_version: 
+  recorded_at: Wed, 06 Apr 2016 19:36:47 GMT
+recorded_with: VCR 3.0.1

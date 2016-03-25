@@ -27,23 +27,14 @@ RSpec.describe "MoviesControllers", type: :request do
     end
   end
 
-  describe "POST /api/v1/movies" do
-    let(:new_movie_attributes) { attributes_for(:movie) }
+  describe "POST /api/v1/movies/import" do
+    let(:new_movie_attributes) { attributes_for(:movie_for_import) }
 
     it "creates a new movie when using correct params" do
-      post "/api/v1/movies", params: { movie: new_movie_attributes }
+      post "/api/v1/movies/import", params: { movie: new_movie_attributes }
 
-      expect(response).to be_created
-      expect(response).to be_a_serialized(:movie).with_attributes(new_movie_attributes)
-    end
-
-    it "returns the errors when trying to create a movie with wrong params" do
-      expected_errors = { imdb_id: ["can't be blank"] }
-
-      post "/api/v1/movies", params: { movie: { foo: "bar", title: "foobar" } }
-
-      expect(response).to be_bad_request
-      expect(parsed_response[:errors]).to eq(expected_errors)
+      expect(response).to be_accepted
+      expect(MoviesImporterJob).to have_queued(new_movie_attributes[:imdb_id])
     end
   end
 
