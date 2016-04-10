@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "MoviesControllers", type: :request do
+RSpec.describe "MoviesController", type: :request do
   include RequestHelpers::JSON
 
   describe "GET /api/v1/movies" do
@@ -12,8 +12,8 @@ RSpec.describe "MoviesControllers", type: :request do
       get '/api/v1/movies'
 
       expect(response).to be_successful
-      expect(parsed_response[:movies].length).to be(3)
-      expect(response).to be_a_serialized_collection_of(:movies)
+      expect(response).to be_a_serialized_collection_of(:movies).
+                            of_length(3)
     end
   end
 

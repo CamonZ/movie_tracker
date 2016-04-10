@@ -37,6 +37,7 @@ group :test do
   gem 'rspec-rails', '3.5.0.beta1'
   gem 'webmock'
   gem 'vcr'
+  gem 'response_code_matchers'
 end
 
 group :development do

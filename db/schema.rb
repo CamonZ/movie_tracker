@@ -11,10 +11,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160322152555) do
+ActiveRecord::Schema.define(version: 20160415222726) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "collections", force: :cascade do |t|
+    t.string   "title"
+    t.text     "description"
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+    t.integer  "movies_count", default: 0
+  end
+
+  create_table "collections_movies", id: false, force: :cascade do |t|
+    t.integer "collection_id", null: false
+    t.integer "movie_id",      null: false
+  end
+
+  add_index "collections_movies", ["collection_id", "movie_id"], name: "index_collections_movies_on_collection_id_and_movie_id", unique: true, using: :btree
+  add_index "collections_movies", ["movie_id", "collection_id"], name: "index_collections_movies_on_movie_id_and_collection_id", unique: true, using: :btree
 
   create_table "movies", force: :cascade do |t|
     t.string   "imdb_id"

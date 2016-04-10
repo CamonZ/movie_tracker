@@ -19,4 +19,32 @@ RSpec.describe Movie, type: :model do
       expect(MoviesImporterJob).to have_queued('tt0468569')
     end
   end
+
+  describe ".add_to_collection" do
+    let(:collection) { create(:collection) }
+    let(:movie) { create(:movie) }
+
+    it "adds the movie to the collection and increments the movies_counter on the collection" do
+      Movie.add_to_collection(collection.id, movie.id)
+      collection.reload
+
+      expect(collection.movies).to include(movie)
+      expect(collection.movies_count).to eql(1)
+    end
+  end
+
+  describe ".remove_from_collection" do
+    let(:collection) { create(:collection) }
+    let(:movie) { create(:movie) }
+
+    before { Movie.add_to_collection(collection.id, movie.id) }
+
+    it "removes the movie to the collection and decrements the movies_counter on the collection" do
+      Movie.remove_from_collection(collection.id, movie.id)
+      collection.reload
+
+      expect(collection.movies).to be_empty
+      expect(collection.movies_count).to eql(0)
+    end
+  end
 end

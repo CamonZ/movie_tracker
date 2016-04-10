@@ -4,8 +4,16 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
+
       resources :movies, except: :create do
         post 'import', on: :collection
+      end
+
+      resources :collections do
+        resources :movies, only: [:add, :remove] do
+          post 'add', to: 'movies#add_to_collection', on: :collection
+          delete 'remove', to: 'movies#remove_from_collection', on: :collection
+        end
       end
     end
   end

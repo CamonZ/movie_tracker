@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "definitions": {
+    "collection": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "integer" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "movies_count": { "type": "integer" },
+        "movies": {
+              "type": "array",
+              "minItems": 0,
+              "items": { "$ref": "spec/support/api/schemas/movie.json#movie" }
+        }
+      },
+      "required": ["id", "title", "description"]
+    }
+  }
+}
+
