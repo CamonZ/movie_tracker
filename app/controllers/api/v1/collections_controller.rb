@@ -1,4 +1,4 @@
-class Api::V1::CollectionsController < ApplicationController
+class Api::V1::CollectionsController < Api::AuthenticatedController
   def index
     collections = Collection.all
     render json: collections, each_serializer: CollectionDigestSerializer
@@ -10,7 +10,7 @@ class Api::V1::CollectionsController < ApplicationController
   end
 
   def create
-    collection = Collection.new(collection_attributes)
+    collection = Collection.new(collection_attributes.merge( user_id: current_resource_owner.id ))
     collection.save
 
     head :created, location: api_v1_collection_path(collection)

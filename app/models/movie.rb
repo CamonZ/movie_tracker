@@ -1,12 +1,13 @@
 class Movie < ApplicationRecord
 
   has_and_belongs_to_many :collections, uniq: true
+  belongs_to :user
 
-  validates_presence_of :title, :imdb_id
+  validates_presence_of :title, :imdb_id, :user
   validates_uniqueness_of :imdb_id
 
-  def self.import(imdb_id)
-    Resque.enqueue(MoviesImporterJob, imdb_id)
+  def self.import(imdb_id, user_id)
+    Resque.enqueue(MoviesImporterJob, imdb_id, user_id)
   end
 
   def self.add_to_collection(collection_id, movie_id)

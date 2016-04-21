@@ -4,6 +4,7 @@ require "#{Rails.root}/lib/domain/omdb/movie_wrapper.rb"
 
 
 RSpec.describe MovieImporter do
+  let(:user) { create(:user) }
   let(:imdb_id) { 'tt0468569' }
   let(:movie_attributes) do
     {
@@ -42,12 +43,14 @@ RSpec.describe MovieImporter do
 
   describe "#import" do
     it "creates a new movie on the database when it hasn't been imported yet", vcr: { cassette_name: "omdb_movie_fetch" } do
-      expect { subject.import(imdb_id) }.to change { Movie.count }.by(1)
+      expect { subject.import(imdb_id, user.id) }.to change { Movie.count }.by(1)
     end
 
     it "raises an error when the movie has already been created", vcr: { cassette_name: "omdb_movie_fetch" } do
-      existing_movie = Movie.create(MovieWrapper.new(movie_attributes).attributes)
-      expect { subject.import(imdb_id) }.to raise_error { ActiveRecord::RecordInvalid }
+      movie_creation_attributes =MovieWrapper.new(movie_attributes).attributes.merge( user_id: user.id )
+      existing_movie = Movie.create(movie_creation_attributes)
+
+      expect { subject.import(imdb_id, user.id) }.to raise_error { ActiveRecord::RecordInvalid }
     end
   end
 end

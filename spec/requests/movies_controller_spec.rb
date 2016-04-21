@@ -1,7 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe "MoviesController", type: :request do
-  include RequestHelpers::JSON
+  let(:user) { create(:user) }
+  let(:token) { token_for_user(user).token }
+  let(:auth_header) { { "Authorization" => "Bearer #{token}" } }
 
   describe "GET /api/v1/movies" do
     before do
@@ -9,7 +11,7 @@ RSpec.describe "MoviesController", type: :request do
     end
 
     it "returns a collection of movies" do
-      get '/api/v1/movies'
+      get '/api/v1/movies', headers: auth_header
 
       expect(response).to be_successful
       expect(response).to be_a_serialized_collection_of(:movies).
@@ -20,7 +22,7 @@ RSpec.describe "MoviesController", type: :request do
   describe "GET /api/v1/movies/:id" do
     let(:movie) { create(:movie) }
     it "returns the serialized movie" do
-      get "/api/v1/movies/#{movie.id}"
+      get "/api/v1/movies/#{movie.id}", headers: auth_header 
 
       expect(response).to be_successful
       expect(response).to be_a_serialized(:movie)
@@ -31,10 +33,10 @@ RSpec.describe "MoviesController", type: :request do
     let(:new_movie_attributes) { attributes_for(:movie_for_import) }
 
     it "creates a new movie when using correct params" do
-      post "/api/v1/movies/import", params: { movie: new_movie_attributes }
+      post "/api/v1/movies/import", params: { movie: new_movie_attributes }, headers: auth_header
 
       expect(response).to be_accepted
-      expect(MoviesImporterJob).to have_queued(new_movie_attributes[:imdb_id])
+      expect(MoviesImporterJob).to have_queued(new_movie_attributes[:imdb_id], user.id)
     end
   end
 
@@ -45,7 +47,7 @@ RSpec.describe "MoviesController", type: :request do
     let(:updated_attributes) { { id: movie.id, imdb_id: movie.imdb_id }.merge(title) }
 
     it "updates the movie when requesting with proper params" do
-      put "/api/v1/movies/#{movie.id}", params: params
+      put "/api/v1/movies/#{movie.id}", params: params, headers: auth_header
 
       expect(response).to be_accepted
       expect(response).to be_a_serialized(:movie).with_attributes(updated_attributes)
@@ -56,12 +58,12 @@ RSpec.describe "MoviesController", type: :request do
     let(:movie) { create(:movie) }
 
     it "destroys the movie" do
-      delete "/api/v1/movies/#{movie.id}"
+      delete "/api/v1/movies/#{movie.id}", headers: auth_header
 
       expect(response.body.strip).to be_empty
       expect(response).to be_accepted
 
-      get "/api/v1/movies/#{movie.id}"
+      get "/api/v1/movies/#{movie.id}", headers: auth_header
 
       expect(response).to be_not_found
     end

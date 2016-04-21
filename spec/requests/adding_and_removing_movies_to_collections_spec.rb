@@ -1,17 +1,19 @@
 require 'rails_helper'
 
 describe "MoviesController", type: :request do
-
+  let(:user) { create(:user) }
+  let(:token) { token_for_user(user).token }
+  let(:auth_header) { { "Authorization" => "Bearer #{token}" } }
   let(:collection) { create(:collection) }
   let(:movie) { create(:movie) }
 
   describe "when requesting with a non-existant collection" do
     it "returns not_found" do
-      add_movie_to_collection_request(collection.id + 1, movie.id)
+      add_movie_to_collection_request(collection.id + 1, movie.id, auth_header)
 
       expect(response).to be_not_found
 
-      remove_movie_from_collection_request(collection.id + 1, movie.id)
+      remove_movie_from_collection_request(collection.id + 1, movie.id, auth_header)
 
       expect(response).to be_not_found
     end
@@ -19,11 +21,11 @@ describe "MoviesController", type: :request do
 
   describe "when requesting with a non-existant movie" do
     it "returns not_found" do
-      add_movie_to_collection_request(collection.id, movie.id + 1)
+      add_movie_to_collection_request(collection.id, movie.id + 1, auth_header)
 
       expect(response).to be_not_found
 
-      remove_movie_from_collection_request(collection.id, movie.id + 1)
+      remove_movie_from_collection_request(collection.id, movie.id + 1, auth_header)
 
       expect(response).to be_not_found
     end
@@ -35,11 +37,11 @@ describe "MoviesController", type: :request do
 
     context "when the movie is not part of the collection" do
       it "adds the movie to the collection" do
-        add_movie_to_collection_request(collection.id, movie.id)
+        add_movie_to_collection_request(collection.id, movie.id, auth_header)
 
         expect(response).to be_accepted
 
-        get "/api/v1/collections/#{collection.id}"
+        get "/api/v1/collections/#{collection.id}", headers: auth_header
 
         expect(response).to be_successful
         expect(response).to be_a_serialized(:collection).
@@ -53,7 +55,7 @@ describe "MoviesController", type: :request do
       before { Movie.add_to_collection(collection.id, movie.id) }
 
       it "returns unprocessable entity" do
-        add_movie_to_collection_request(collection.id, movie.id)
+        add_movie_to_collection_request(collection.id, movie.id, auth_header)
 
         expect(response).to be_unprocessable_entity
       end
@@ -67,7 +69,7 @@ describe "MoviesController", type: :request do
       before { collection.movies.delete_all }
 
       it "returns not_found" do
-        remove_movie_from_collection_request(collection.id, movie.id)
+        remove_movie_from_collection_request(collection.id, movie.id, auth_header)
 
         expect(response).to be_not_found
       end
@@ -78,11 +80,11 @@ describe "MoviesController", type: :request do
       before { Movie.add_to_collection(collection.id, movie.id) }
 
       it "removes the movie from the collection" do
-        remove_movie_from_collection_request(collection.id, movie.id)
+        remove_movie_from_collection_request(collection.id, movie.id, auth_header)
 
         expect(response).to be_accepted
 
-        get "/api/v1/collections/#{collection.id}"
+        get "/api/v1/collections/#{collection.id}", headers: auth_header
 
         expect(response).to be_successful
 
@@ -94,10 +96,10 @@ describe "MoviesController", type: :request do
   end
 end
 
-def add_movie_to_collection_request(collection_id, movie_id)
-  post "/api/v1/collections/#{collection_id}/movies/add", params: { movie_id: movie_id }
+def add_movie_to_collection_request(collection_id, movie_id, headers)
+  post "/api/v1/collections/#{collection_id}/movies/add", params: { movie_id: movie_id }, headers: headers
 end
 
-def remove_movie_from_collection_request(collection_id, movie_id)
-  delete "/api/v1/collections/#{collection_id}/movies/remove", params: { movie_id: movie_id }
+def remove_movie_from_collection_request(collection_id, movie_id, headers)
+  delete "/api/v1/collections/#{collection_id}/movies/remove", params: { movie_id: movie_id }, headers: headers
 end

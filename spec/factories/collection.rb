@@ -5,5 +5,6 @@ FactoryGirl.define do
     end
 
     description "Lorem Ipsum Dolor Sit Amet"
+    user
   end
 end

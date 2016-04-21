@@ -1,7 +1,7 @@
 class MovieImporter
 
-  def import(imdb_id)
-    create_movie_from fetched_movie(imdb_id)
+  def import(imdb_id, user_id)
+    create_movie_from(fetched_movie(imdb_id), user_id)
   end
 
   def fetched_movie(imdb_id)
@@ -14,8 +14,8 @@ class MovieImporter
     MovieWrapper.new(fetched_movie).attributes
   end
 
-  def create_movie_from(fetched_movie)
-    movie = Movie.new(wrapped_attributes(fetched_movie))
+  def create_movie_from(fetched_movie, user_id)
+    movie = Movie.new(wrapped_attributes(fetched_movie).merge( user_id: user_id ))
     movie.save!
   end
 end

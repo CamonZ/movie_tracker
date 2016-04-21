@@ -1,4 +1,4 @@
-class Api::V1::MoviesController < ApplicationController
+class Api::V1::MoviesController < Api::AuthenticatedController
 
   def index
     movies = Movie.all
@@ -11,7 +11,7 @@ class Api::V1::MoviesController < ApplicationController
   end
 
   def import
-    Movie.import(import_attributes)
+    Movie.import(*import_attributes)
     head :accepted
   end
 
@@ -41,7 +41,7 @@ class Api::V1::MoviesController < ApplicationController
   private
 
   def import_attributes
-    params.require(:movie).require(:imdb_id)
+    { imdb_id: params.require(:movie).require(:imdb_id) }.merge( user_id: current_resource_owner.id ).values
   end
 
   def movie_attributes

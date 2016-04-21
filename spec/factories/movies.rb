@@ -8,6 +8,8 @@ FactoryGirl.define do
       sequence :title do |n|
         "The Dark Knight #{n}"
       end
+
+      user
     end
   end
 end
