@@ -6,7 +6,9 @@ abort("The Rails environment is running in production mode!") if Rails.env.produ
 require 'spec_helper'
 require 'rspec/rails'
 require 'vcr'
+require 'webmock/rspec'
 require 'response_code_matchers'
+
 # Add additional requires below this line. Rails is not loaded until this point!
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
@@ -29,6 +31,7 @@ VCR.configure do |config|
   config.cassette_library_dir = 'spec/vcr'
   config.hook_into :webmock
   config.configure_rspec_metadata!
+  config.default_cassette_options = { record: :new_episodes }
 end
 
 # Checks for pending migration and applies them before tests are run.
@@ -38,7 +41,7 @@ ActiveRecord::Migration.maintain_test_schema!
 RSpec.configure do |config|
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   #config.fixture_path = "#{::Rails.root}/spec/fixtures"
-  
+
   config.include ResponseCodeMatchers, type: :request
   config.include LoginHelper, type: :request
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
